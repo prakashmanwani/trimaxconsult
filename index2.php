@@ -421,51 +421,141 @@
 					</div>
 				</div>
 				
-				
 				 <div class="row">
 					<div class="col-lg-8">
 						<div class="boxed-grey">
-							<form id="contact-form">
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="name"> Name</label>
-											<input type="text" class="form-control" id="name" placeholder="Enter name" required="required" />
+	<div>						
+	<?php
+        function validEmail($email)
+        {
+            $isValid = true;
+            $atIndex = strrpos($email, "@");
+            if (is_bool($atIndex) && !$atIndex)
+            {
+                $isValid = false;
+            }
+            else
+            {
+                $domain = substr($email, $atIndex+1);
+                $local = substr($email, 0, $atIndex);
+                $localLen = strlen($local);
+                $domainLen = strlen($domain);
+                if ($localLen < 1 || $localLen > 64)
+                {
+                    // local part length exceeded
+                    $isValid = false;
+                }
+                else if ($domainLen < 1 || $domainLen > 255)
+                {
+                    // domain part length exceeded
+                    $isValid = false;
+                }
+                else if ($local[0] == '.' || $local[$localLen-1] == '.')
+                {
+                    // local part starts or ends with '.'
+                    $isValid = false;
+                }
+                else if (preg_match('/\\.\\./', $local))
+                {
+                    // local part has two consecutive dots
+                    $isValid = false;
+                }
+                else if (!preg_match('/^[A-Za-z0-9\\-\\.]+$/', $domain))
+                {
+                    // character not valid in domain part
+                    $isValid = false;
+                }
+                else if (preg_match('/\\.\\./', $domain))
+                {
+                    // domain part has two consecutive dots
+                    $isValid = false;
+                }
+                else if(!preg_match('/^(\\\\.|[A-Za-z0-9!#%&`_=\\/$\'*+?^{}|~.-])+$/',
+                            str_replace("\\\\","",$local)))
+                {
+                    // character not valid in local part unless 
+                    // local part is quoted
+                    if (!preg_match('/^"(\\\\"|[^"])+"$/',
+                        str_replace("\\\\","",$local)))
+                    {
+                    $isValid = false;
+                    }
+                }
+                if ($isValid && !(checkdnsrr($domain,"MX") || checkdnsrr($domain,"A")))
+                {
+                    // domain not found in DNS
+                    $isValid = false;
+                }
+            }
+            return $isValid;
+        }
+
+
+        if (isset($_REQUEST['email']))
+          {//if "email" is filled out, proceed
+
+          //check if the email address is invalid
+          $mailcheck = validEmail($_REQUEST['email']);
+          if ($mailcheck==FALSE)
+            {
+            echo "<p>Invalid e-mail address.</p>";
+            }
+          else {
+            //send email
+            $name = $_REQUEST['name'] ;
+            $email = $_REQUEST['email'] ;
+            $message = $_REQUEST['message'] ;
+            mail("info@trimaxconsulting.com", "Subject: Message from contact form",
+            $message, 'From: "' . $name . '" <' . $email . '>' );
+            echo "<p>Thank you for writing to our website. Please allow up to 24 hours for a reply, if you have requested one.</p>";
+            }
+          }
+        else {
+          //if "email" is not filled out, display the form
+          echo "<form id='contact-form'>
+						<div class='row'>
+									<div class='col-md-6'>
+										<div class='form-group'>
+											<label for='name'> Name</label>
+											<input type='text' class='form-control' id='name' placeholder='Enter name' required='required' />
 										</div>
-										<div class="form-group">
-											<label for="email"> Email Address</label>
-											<div class="input-group">
-												<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span> </span>
-												<input type="email" class="form-control" id="email" placeholder="Enter email" required="required" />
+										<div class='form-group'>
+											<label for='email'> Email Address</label>
+											<div class='input-group'>
+												<span class='input-group-addon'><span class='glyphicon glyphicon-envelope'></span> </span>
+												<input type='email' class='form-control' id='email' placeholder='Enter email' required='required' />
 											</div>
 										</div>
-										<div class="form-group">
-											<label for="subject"> Subject</label>
-											<select id="subject" name="subject" class="form-control" required="required">
-												<option value="na" selected="">Choose One:</option>
-												<option value="service">General Customer Service</option>
-												<option value="suggestions">Suggestions</option>
-												<option value="product">Training</option>
+										<div class='form-group'>
+											<label for='subject'> Subject</label>
+											<select id='subject' name='subject' class='form-control' required='required'>
+												<option value='na' selected=''>Choose One:</option>
+												<option value='service'>General Customer Service</option>
+												<option value='suggestions'>Suggestions</option>
+												<option value='product'>Training</option>
 											</select>
 										</div>
 									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="name"> Message</label>
-											<textarea name="message" id="message" class="form-control" rows="9" cols="25" required="required"
-                                placeholder="Message"></textarea>
+									<div class='col-md-6'>
+										<div class='form-group'>
+											<label for='name'> Message</label>
+											<textarea name='message' id='message' class='form-control' rows='9' cols='25' required='required'
+                                placeholder='Message'></textarea>
 										</div>
 									</div>
-									<div class="col-md-12">
-										<button type="submit" class="btn btn-skin pull-right" id="btnContactUs" action="MAILTO:info@trimaxconsulting.com" method="post">
+									<div class='col-md-12'>
+										<button type='submit' class='btn btn-skin pull-right' id='btnContactUs' action='MAILTO:info@trimaxconsulting.com' method='post'>
 											Send Message
 										</button>
-									</div>
+										</div>
 								</div>
-							</form>
+							</form>";
+          }
+        ?>
+									
 						</div>
 					</div>
-
+</div>
 					<div class="col-lg-4">
 						<div class="widget-contact">
 							<h5>Main Office</h5>
