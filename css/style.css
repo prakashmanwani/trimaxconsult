@@ -1,6 +1,19 @@
 /* ==== Google font ==== */
 @import url('http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,100italic,300italic,400italic,700italic,900italic|Montserrat:700|Merriweather:400italic');
 
+@media screen and (max-width: 1020px) {
+  #container, #header, #content, #footer{
+    float: none;
+    width: auto;
+    text-align:center;
+    position:relative;
+  }
+ #subtitle, #share, #slider, #sidebar{
+    display:none;
+    position:relative;
+  }
+  p{ font-size: 2em; }
+ }
 
 body {
     width: 100%;
@@ -103,7 +116,7 @@ a:focus {
 	    -webkit-transition: all .2s ease-in-out;
     -moz-transition: all .2s ease-in-out;
     transition: all .2s ease-in-out;
-	color: #fff;
+  color: #fff;
 }
 
 .navbar-custom ul.nav ul.dropdown-menu {
