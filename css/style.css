@@ -12,17 +12,8 @@
     display:none;
     position:relative;
   }
-
-  .avatar{
-    float: none;
-    width: 255px;
-    height:255px;
-    text-align:center;
-    position:relative;
-  }
   p{ font-size: 2em; }
-  body{width:100%}
-}
+ }
 
 body {
     width: 100%;
